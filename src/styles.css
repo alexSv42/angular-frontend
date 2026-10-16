@@ -1,0 +1,11 @@
+@use '@angular/material' as mat;
+
+@include mat.theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+  ),
+  typography: Roboto,
+  density: 0,
+));
+

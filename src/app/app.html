@@ -1,0 +1,7 @@
+@if (users().length) {
+  <app-user-table [users]="users()" [dropdownOptions]="dropdownOptions()" />
+} @else {
+  <p class="loading">Loading…</p>
+}
+
+<router-outlet />

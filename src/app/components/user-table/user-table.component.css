@@ -1,0 +1,79 @@
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.filters mat-form-field {
+  width: 180px;
+}
+
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  padding-top: 0.5rem;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+th.sortable mat-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+th.mat-header-cell {
+  white-space: nowrap;
+}
+
+td.mat-cell {
+  white-space: nowrap;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.pagination span {
+  font-size: 0.875rem;
+  color: #555;
+}
+
+.sentinel {
+  height: 1px;
+}
+
+.end-message {
+  text-align: center;
+  padding: 1rem;
+  color: #888;
+  font-size: 0.875rem;
+}

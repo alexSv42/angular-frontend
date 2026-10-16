@@ -1,0 +1,138 @@
+<div class="controls">
+  <div class="filters">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Search name…" [(ngModel)]="filters.name" (ngModelChange)="applyFilters()" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput placeholder="Search email…" [(ngModel)]="filters.email" (ngModelChange)="applyFilters()" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Position</mat-label>
+      <mat-select [(ngModel)]="filters.position" (ngModelChange)="applyFilters()">
+        <mat-option [value]="null">All</mat-option>
+        @for (opt of dropdownOptions().positions; track opt) {
+          <mat-option [value]="opt">{{ opt }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Level</mat-label>
+      <mat-select [(ngModel)]="filters.level" (ngModelChange)="applyFilters()">
+        <mat-option [value]="null">All</mat-option>
+        @for (opt of dropdownOptions().levels; track opt) {
+          <mat-option [value]="opt">{{ opt }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Technology</mat-label>
+      <mat-select [(ngModel)]="filters.primaryTech" (ngModelChange)="applyFilters()">
+        <mat-option [value]="null">All</mat-option>
+        @for (opt of dropdownOptions().tech; track opt) {
+          <mat-option [value]="opt">{{ opt }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Employment Type</mat-label>
+      <mat-select [(ngModel)]="filters.employmentType" (ngModelChange)="applyFilters()">
+        <mat-option [value]="null">All</mat-option>
+        @for (opt of dropdownOptions().employmentTypes; track opt) {
+          <mat-option [value]="opt">{{ opt }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+
+<div class="table-wrapper">
+  <table mat-table [dataSource]="pagedUsers()">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef (click)="toggleSort('name')" class="sortable">
+        Name
+        <mat-icon>{{ getSortIcon('name') }}</mat-icon>
+      </th>
+      <td mat-cell *matCellDef="let user">{{ user.firstName }} {{ user.lastName }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef (click)="toggleSort('email')" class="sortable">
+        Email
+        <mat-icon>{{ getSortIcon('email') }}</mat-icon>
+      </th>
+      <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="age">
+      <th mat-header-cell *matHeaderCellDef (click)="toggleSort('age')" class="sortable">
+        Age
+        <mat-icon>{{ getSortIcon('age') }}</mat-icon>
+      </th>
+      <td mat-cell *matCellDef="let user">{{ user.age }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="position">
+      <th mat-header-cell *matHeaderCellDef>Position</th>
+      <td mat-cell *matCellDef="let user">{{ user.position }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="level">
+      <th mat-header-cell *matHeaderCellDef>Level</th>
+      <td mat-cell *matCellDef="let user">{{ user.level }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="experienceYears">
+      <th mat-header-cell *matHeaderCellDef>Experience</th>
+      <td mat-cell *matCellDef="let user">{{ user.experienceYears }} yrs</td>
+    </ng-container>
+
+    <ng-container matColumnDef="primaryTech">
+      <th mat-header-cell *matHeaderCellDef>Primary Tech</th>
+      <td mat-cell *matCellDef="let user">{{ user.primaryTech }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="secondaryTech">
+      <th mat-header-cell *matHeaderCellDef>Secondary Tech</th>
+      <td mat-cell *matCellDef="let user">{{ user.secondaryTech.join(', ') }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="salaryMonthly">
+      <th mat-header-cell *matHeaderCellDef (click)="toggleSort('salaryMonthly')" class="sortable">
+        Salary (€)
+        <mat-icon>{{ getSortIcon('salaryMonthly') }}</mat-icon>
+      </th>
+      <td mat-cell *matCellDef="let user">{{ user.salaryMonthly | number }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="employmentType">
+      <th mat-header-cell *matHeaderCellDef>Employment</th>
+      <td mat-cell *matCellDef="let user">{{ user.employmentType }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="isRemote">
+      <th mat-header-cell *matHeaderCellDef>Remote</th>
+      <td mat-cell *matCellDef="let user">{{ user.isRemote ? 'Yes' : 'No' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="isActive">
+      <th mat-header-cell *matHeaderCellDef>Active</th>
+      <td mat-cell *matCellDef="let user">{{ user.isActive ? 'Yes' : 'No' }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>
+
+<div class="pagination">
+  <button mat-button [disabled]="currentPage() === 1" (click)="prevPage()">Previous</button>
+  <span>Page {{ currentPage() }} of {{ totalPages() }} ({{ totalResults() }} results)</span>
+  <button mat-button [disabled]="currentPage() === totalPages()" (click)="nextPage()">Next</button>
+</div>
