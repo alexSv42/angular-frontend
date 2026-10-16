@@ -86,60 +86,60 @@ export class DataService {
     };
   }
 
+  private readonly valueResolvers: Record<string, (user: UserRow) => string | number | boolean> = {
+    name: (u) => `${u.firstName} ${u.lastName}`,
+    email: (u) => u.email,
+    position: (u) => u.position,
+    level: (u) => u.level,
+    primaryTech: (u) => u.primaryTech,
+    employmentType: (u) => u.employmentType,
+    isRemote: (u) => u.isRemote,
+    isActive: (u) => u.isActive,
+    age: (u) => u.age,
+    salaryMonthly: (u) => u.salaryMonthly,
+  };
+
   public filterUsers(users: UserRow[], filters: UserFilters): UserRow[] {
-    return users.filter((user) => {
-      if (filters.name) {
-        const term = filters.name.toLowerCase();
-        const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-        if (!fullName.includes(term)) return false;
-      }
-      if (filters.email && !user.email.toLowerCase().includes(filters.email.toLowerCase())) return false;
-      if (filters.position && user.position !== filters.position) return false;
-      if (filters.level && user.level !== filters.level) return false;
-      if (filters.primaryTech && user.primaryTech !== filters.primaryTech) return false;
-      if (filters.employmentType && user.employmentType !== filters.employmentType) return false;
-      if (filters.isRemote !== null && user.isRemote !== filters.isRemote) return false;
-      if (filters.isActive !== null && user.isActive !== filters.isActive) return false;
-      return true;
-    });
+    const activeFilters = Object.entries(filters).filter(
+      ([, value]) => value !== null && value !== ''
+    );
+
+    if (!activeFilters.length) return users;
+
+    return users.filter((user) =>
+      activeFilters.every(([key, filterValue]) => {
+        const resolver = this.valueResolvers[key];
+        if (!resolver) return true;
+
+        const userValue = resolver(user);
+
+        if (typeof filterValue === 'string' && typeof userValue === 'string') {
+          return userValue.toLowerCase().includes(filterValue.toLowerCase());
+        }
+
+        return userValue === filterValue;
+      })
+    );
   }
 
   public sortUsers(users: UserRow[], sort: SortConfig): UserRow[] {
     if (!sort.column || !sort.direction) return users;
 
-    const sorted = [...users];
+    const resolver = this.valueResolvers[sort.column];
+    if (!resolver) return users;
+
     const dir = sort.direction === 'asc' ? 1 : -1;
 
-    sorted.sort((a, b) => {
-      let valA: string | number;
-      let valB: string | number;
+    return [...users].sort((a, b) => {
+      let valA = resolver(a);
+      let valB = resolver(b);
 
-      switch (sort.column) {
-        case 'name':
-          valA = `${a.firstName} ${a.lastName}`.toLowerCase();
-          valB = `${b.firstName} ${b.lastName}`.toLowerCase();
-          break;
-        case 'email':
-          valA = a.email.toLowerCase();
-          valB = b.email.toLowerCase();
-          break;
-        case 'age':
-          valA = a.age;
-          valB = b.age;
-          break;
-        case 'salaryMonthly':
-          valA = a.salaryMonthly;
-          valB = b.salaryMonthly;
-          break;
-        default:
-          return 0;
-      }
+      if (typeof valA === 'string') valA = valA.toLowerCase();
+      if (typeof valB === 'string') valB = valB.toLowerCase();
 
       if (valA < valB) return -1 * dir;
       if (valA > valB) return 1 * dir;
       return 0;
     });
-
-    return sorted;
   }
 }
